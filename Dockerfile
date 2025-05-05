@@ -1,4 +1,4 @@
-FROM python:3.9-alpine3.13
+FROM python:3.9.12-slim
 LABEL maintainer=abirnag
 
 ENV PYTHONBUFFERED 1
@@ -11,6 +11,7 @@ EXPOSE 8000
 ARG DEV=false
 RUN echo $DEV && python -m venv /py && \
     /py/bin/pip  install --upgrade pip && \
+    apt-get update && apt-get install -y libpq-dev gcc  && \
     /py/bin/pip  install -r /tmp/requirements.txt && \
     if [ $DEV  ] ; \
       then \
@@ -22,6 +23,6 @@ RUN echo $DEV && python -m venv /py && \
         --disabled-password \
         --no-create-home \
         django-user
-ENV PATH="/py/bin:$PATH"
 
+ENV PATH="/py/bin:$PATH"
 USER django-user
